@@ -1,0 +1,179 @@
+:root {
+    --ink-color: #1c1815;
+    --parchment-bg: #f4ecd8;
+}
+
+body {
+    background-color: #1f2937;
+    color: #f3f4f6;
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+}
+
+/* Typography for the Card */
+.card-title {
+    font-family: 'Uncial Antiqua', serif;
+    color: var(--ink-color);
+}
+
+.card-body {
+    font-family: 'IM Fell English', serif;
+    color: var(--ink-color);
+}
+
+/* Parchment Texture & Style */
+.parchment {
+    background-color: var(--parchment-bg);
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+    box-shadow: inset 0 0 40px rgba(139, 115, 85, 0.3), 0 10px 25px rgba(0,0,0,0.5);
+    position: relative;
+}
+
+/* Classic AD&D Border */
+.add-border {
+    border: 3px solid var(--ink-color);
+    position: absolute;
+    top: 10px;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    pointer-events: none;
+}
+.add-border::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    bottom: 3px;
+    left: 3px;
+    right: 3px;
+    border: 1px solid var(--ink-color);
+}
+
+/* 3D Card Flip Mechanics (Main UI Only) */
+.scene {
+    width: 350px;
+    height: 500px;
+    perspective: 1200px;
+    cursor: pointer;
+}
+
+.card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-style: preserve-3d;
+}
+
+.card.is-flipped {
+    transform: rotateY(180deg);
+}
+
+.card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.card-face-front { /* Front holds details */ }
+.card-face-back {
+    transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.separator {
+    width: 100%;
+    height: 12px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10' preserveAspectRatio='none'%3E%3Cpath d='M0,5 L100,5' stroke='%231c1815' stroke-width='1' stroke-dasharray='2,2' /%3E%3Ccircle cx='50' cy='5' r='2' fill='%231c1815' /%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    margin: 8px 0;
+}
+
+/* Custom Scrollbar for inputs */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #1f2937; }
+::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+
+/* Hidden in normal view */
+#print-layout { display: none; }
+
+/* --------------------------------------------------------------------------
+   DEDICATED 4-CARD PRINT LAYOUT (A4 / Letter Friendly)
+   -------------------------------------------------------------------------- */
+@media print {
+    @page {
+        size: portrait;
+        margin: 0; 
+    }
+
+    body, html {
+        background: white !important;
+        height: 100vh !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important;
+        overflow: visible !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Hide all interactive UI elements */
+    aside, main, .scene {
+        display: none !important;
+    }
+
+    /* Show Print Grid Container */
+    #print-layout {
+        display: block !important;
+        width: 100% !important;
+    }
+
+    /* Page Structure - Exactly 1 Page for Fronts, 1 for Backs */
+    .print-page {
+        width: 100vw !important;
+        height: 100vh !important;
+        display: grid !important;
+        
+        /* Perfect 1.5x Playing Card size with 5mm cutting gap */
+        grid-template-columns: 95.25mm 95.25mm !important;
+        grid-template-rows: 133.35mm 133.35mm !important;
+        gap: 5mm !important;
+        
+        /* Center the entire 2x2 grid physically on the paper */
+        justify-content: center !important;
+        align-content: center !important;
+        
+        page-break-after: always !important;
+        break-after: page !important;
+    }
+
+    /* Avoid blank 3rd page */
+    .print-page:last-child {
+        page-break-after: auto !important;
+        break-after: auto !important;
+    }
+
+    /* Style override for the cloned cards inside the print grid */
+    #print-layout .card-face {
+        position: relative !important;
+        transform: none !important; 
+        backface-visibility: visible !important;
+        margin: 0 !important; 
+        
+        /* Cut line guide */
+        outline: 1px dashed #a3a3a3 !important; 
+        outline-offset: 2px;
+        
+        /* Retain parchment inner shadow, but remove heavy drop shadow */
+        box-shadow: none !important; 
+        background: white !important;
+    }
+}
