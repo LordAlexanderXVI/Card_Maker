@@ -55,6 +55,7 @@ body {
     height: 500px;
     perspective: 1200px;
     cursor: pointer;
+    zoom: 200%;
 }
 
 .card {
