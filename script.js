@@ -156,9 +156,10 @@ function renderCardDataToElement(container, data) {
     const applyText = (targetStr, text) => {
         const el = container.querySelector(`[data-target="${targetStr}"]`);
         if(el) el.textContent = text;
+        return el; // Return the element so we can measure it below
     };
 
-    applyText('name', data.name || 'Unnamed Item');
+    const titleEl = applyText('name', data.name || 'Unnamed Item');
     applyText('type', data.type);
     applyText('weight', data.weight);
     applyText('desc', data.desc);
@@ -171,6 +172,46 @@ function renderCardDataToElement(container, data) {
     if(attEl) {
         if (data.attunement) attEl.classList.remove('hidden');
         else attEl.classList.add('hidden');
+    }
+
+    // --- NEW: AUTO-SHRINK TEXT LOGIC ---
+    
+    // 1. Auto-shrink the Description & Rules block
+    const textBodyContainer = container.querySelector('.flex-grow.overflow-hidden');
+    if (textBodyContainer) {
+        // We only measure if the element is currently visible on screen (clientHeight > 0)
+        if (textBodyContainer.clientHeight > 0) {
+            let size = 14; // Start at default size (14px)
+            textBodyContainer.style.fontSize = size + 'px';
+            
+            // While the text overflows its container, shrink it by 0.5px
+            while (textBodyContainer.scrollHeight > textBodyContainer.clientHeight && size > 8) {
+                size -= 0.5;
+                textBodyContainer.style.fontSize = size + 'px';
+            }
+            // Save this calculated size into the data object for the hidden print cards
+            data.bodyFontSize = size;
+        } else if (data.bodyFontSize) {
+            // If this is a hidden print layout card, apply the saved size directly
+            textBodyContainer.style.fontSize = data.bodyFontSize + 'px';
+        }
+    }
+
+    // 2. Auto-shrink the Item Title
+    if (titleEl) {
+        if (titleEl.clientHeight > 0) {
+            let titleSize = 24; // Start at default size (24px)
+            titleEl.style.fontSize = titleSize + 'px';
+            
+            // If the title is forced to wrap and takes up more than 60px (approx 3 lines), shrink it
+            while (titleEl.scrollHeight > 60 && titleSize > 12) {
+                titleSize -= 1;
+                titleEl.style.fontSize = titleSize + 'px';
+            }
+            data.titleFontSize = titleSize;
+        } else if (data.titleFontSize) {
+            titleEl.style.fontSize = data.titleFontSize + 'px';
+        }
     }
 }
 
