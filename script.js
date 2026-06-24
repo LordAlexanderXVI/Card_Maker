@@ -3,10 +3,10 @@ let currentTab = 0;
 
 // Default templates for all 4 cards
 const cardsData = [
-    { theme: "classic", name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 },
-    { theme: "classic", name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 },
-    { theme: "classic", name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 },
-    { theme: "classic", name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 }  
+    { name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 },
+    { name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 },
+    { name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 },
+    { name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 }
 ];
 
 // Form Inputs
@@ -19,8 +19,7 @@ const inputs = {
     rules: document.getElementById('inputRules'),
     footerFront: document.getElementById('inputFooterFront'),
     footerBack: document.getElementById('inputFooterBack'),
-    brightness: document.getElementById('brightnessSlider'),
-    theme: document.getElementById('inputTheme'),
+    brightness: document.getElementById('brightnessSlider')
 };
 const brightnessVal = document.getElementById('brightnessVal');
 const imageUpload = document.getElementById('imageUpload');
@@ -113,7 +112,6 @@ function saveCurrentTabState() {
     c.fFront = inputs.footerFront.value;
     c.fBack = inputs.footerBack.value;
     c.bright = parseInt(inputs.brightness.value);
-    c.theme = inputs.theme.value;
 }
 
 function loadStateIntoInputs() {
@@ -128,7 +126,6 @@ function loadStateIntoInputs() {
     inputs.footerBack.value = c.fBack;
     inputs.brightness.value = c.bright;
     brightnessVal.textContent = c.bright;
-    if (c.theme) inputs.theme.value = c.theme;
     
     // Clear file upload UI visually to indicate ready for new load
     imageUpload.value = '';
@@ -154,20 +151,17 @@ Object.values(inputs).forEach(input => {
 // ----------------------------------------------------------------------
 // Rendering engine for Data -> HTML Elements
 // ----------------------------------------------------------------------
-function renderCardDataToElement(container, data, isPrintLayout = false) {
+function renderCardDataToElement(container, data) {
     if(!container) return;
     
-    // 1. INJECT THE HTML THEME TEMPLATE
-    const theme = data.theme || 'classic';
-    container.innerHTML = CardThemes[theme].getHTML();
-
-    // 2. FIND AND FILL ELEMENTS
     const applyText = (targetStr, text) => {
         const el = container.querySelector(`[data-target="${targetStr}"]`);
         if(el) {
+            // FIX: Convert invisible text area line breaks (\n) into HTML line breaks (<br>)
+            // This preserves paragraph spacing and blank lines perfectly.
             el.innerHTML = (text || '').toString().replace(/\n/g, '<br>');
         }
-        return el; 
+        return el; // Return the element so we can measure it below
     };
 
     const titleEl = applyText('name', data.name || 'Unnamed Item');
@@ -186,11 +180,14 @@ function renderCardDataToElement(container, data, isPrintLayout = false) {
     }
 
     // --- AUTO-SHRINK TEXT LOGIC ---
+    
+    // 1. Auto-shrink the Description & Rules block
     const textBodyContainer = container.querySelector('.flex-grow.overflow-hidden');
     if (textBodyContainer) {
         if (textBodyContainer.clientHeight > 0) {
             let size = 14; 
             textBodyContainer.style.fontSize = size + 'px';
+            
             while (textBodyContainer.scrollHeight > textBodyContainer.clientHeight && size > 8) {
                 size -= 0.5;
                 textBodyContainer.style.fontSize = size + 'px';
@@ -201,10 +198,12 @@ function renderCardDataToElement(container, data, isPrintLayout = false) {
         }
     }
 
+    // 2. Auto-shrink the Item Title
     if (titleEl) {
         if (titleEl.clientHeight > 0) {
             let titleSize = 24; 
             titleEl.style.fontSize = titleSize + 'px';
+            
             while (titleEl.scrollHeight > 60 && titleSize > 12) {
                 titleSize -= 1;
                 titleEl.style.fontSize = titleSize + 'px';
