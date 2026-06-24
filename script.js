@@ -317,21 +317,21 @@ function applyImageToCanvas(cardData, targetCanvas) {
     }
 
     // Target ink color: #1c1815 -> R:28, G:24, B:21
-    for (let i = 0; i < gray.length; i++) {
-        const val = gray[i];
-        const idx = i * 4;
-        if (val === 0) {
-            data[idx] = 28;     // R
-            data[idx + 1] = 24; // G
-            data[idx + 2] = 21; // B
-            data[idx + 3] = 255; // Alpha
-        } else {
-            data[idx] = 0;
-            data[idx + 1] = 0;
-            data[idx + 2] = 0;
-            data[idx + 3] = 0; // Alpha Transparent (parchment shows through)
-        }
-    }
+  //  for (let i = 0; i < gray.length; i++) {
+  //      const val = gray[i];
+  //      const idx = i * 4;
+   //     if (val === 0) {
+   //         data[idx] = 28;     // R
+   //         data[idx + 1] = 24; // G
+   //         data[idx + 2] = 21; // B
+   //         data[idx + 3] = 255; // Alpha
+   //     } else {
+   //         data[idx] = 0;
+    //        data[idx + 1] = 0;
+     //       data[idx + 2] = 0;
+     //       data[idx + 3] = 0; // Alpha Transparent (parchment shows through)
+      //  }
+    // } 
 
     ctx.putImageData(imageData, 0, 0);
 }
