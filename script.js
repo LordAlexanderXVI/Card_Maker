@@ -316,6 +316,59 @@ function applyImageToCanvas(cardData, targetCanvas) {
         }
     }
 
+    // Target ink color: #1c1815 -> R:28, G:24, B:21
+    for (let i = 0; i < gray.length; i++) {
+        const val = gray[i];
+        const idx = i * 4;
+        if (val === 0) {
+            data[idx] = 28;     // R
+            data[idx + 1] = 24; // G
+            data[idx + 2] = 21; // B
+            data[idx + 3] = 255; // Alpha
+        } else {
+            data[idx] = 0;
+            data[idx + 1] = 0;
+            data[idx + 2] = 0;
+            data[idx + 3] = 0; // Alpha Transparent (parchment shows through)
+        }
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+}
+
+function drawPlaceholder(targetCanvas) {
+    if(!targetCanvas) return;
+    const ctx = targetCanvas.getContext('2d');
+    targetCanvas.width = 150;
+    targetCanvas.height = 150;
+    ctx.clearRect(0, 0, 150, 150);
+    ctx.fillStyle = '#1c1815';
+    ctx.beginPath();
+    ctx.moveTo(70, 130);
+    ctx.lineTo(80, 130);
+    ctx.lineTo(80, 50);
+    ctx.lineTo(95, 50);
+    ctx.lineTo(95, 40);
+    ctx.lineTo(80, 40);
+    ctx.lineTo(75, 10);
+    ctx.lineTo(70, 40);
+    ctx.lineTo(55, 40);
+    ctx.lineTo(55, 50);
+    ctx.lineTo(70, 50);
+    ctx.closePath();
+    ctx.fill();
+    
+    // Retro printed noise
+    const imgData = ctx.getImageData(0,0,150,150);
+    for(let i=0; i<imgData.data.length; i+=4){
+        if(imgData.data[i+3] > 0) {
+            if(Math.random() > 0.8) {
+                imgData.data[i+3] = 0;
+            }
+        }
+    }
+    ctx.putImageData(imgData, 0, 0);
+}
 
 // Initialize sequence on startup
 window.onload = () => {
