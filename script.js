@@ -3,10 +3,6 @@ let currentTab = 0;
 
 // Default templates for all 4 cards
 const cardsData = [
-    { name: "Gauntlets of Ogre Power", type: "Wondrous Item", weight: "2 lbs.", attunement: true, desc: "These appear as normal leather gauntlets but carry the faint scent of sweat and earth. They feel unusually heavy until donned.", rules: "Grants the wearer a Strength score of 18/00, granting a +3 bonus to attack rolls and a +6 bonus to damage rolls in melee combat. They are ineffective if the wearer is already of equivalent or greater strength.", fFront: "~ AD&D Item ~", fBack: "Illustration", img: null, bright: 0 },
-    { name: "Ring of Protection +1", type: "Ring", weight: "-", attunement: true, desc: "A perfectly smooth silver band that reflects light with an unnatural brilliance.", rules: "Grants the wearer a +1 bonus to Armor Class and all saving throws. Multiple rings of protection do not stack their effects.", fFront: "~ AD&D Item ~", fBack: "Illustration", img: null, bright: 0 },
-    { name: "Bag of Holding", type: "Wondrous Item", weight: "15 lbs.", attunement: false, desc: "This appears to be a common cloth sack of about 2 feet by 4 feet in size.", rules: "The bag opens into an extradimensional space. It can hold up to 500 lbs of material not exceeding 70 cubic feet. Regardless of what is put into it, the bag always weighs 15 lbs.", fFront: "~ AD&D Item ~", fBack: "Illustration", img: null, bright: 0 },
-    { name: "Boots of Speed", type: "Wondrous Item", weight: "1 lb.", attunement: true, desc: "Finely crafted leather boots that feel incredibly light and flexible.", rules: "While wearing these boots, your base walking speed is doubled. You can use this effect for up to 10 minutes per day, which need not be consecutive.", fFront: "~ AD&D Item ~", fBack: "Illustration", img: null, bright: 0 }
 ];
 
 // Form Inputs
