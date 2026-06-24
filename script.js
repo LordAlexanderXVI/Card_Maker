@@ -113,6 +113,7 @@ function saveCurrentTabState() {
     c.fFront = inputs.footerFront.value;
     c.fBack = inputs.footerBack.value;
     c.bright = parseInt(inputs.brightness.value);
+    c.theme = inputs.theme.value;
 }
 
 function loadStateIntoInputs() {
@@ -127,6 +128,7 @@ function loadStateIntoInputs() {
     inputs.footerBack.value = c.fBack;
     inputs.brightness.value = c.bright;
     brightnessVal.textContent = c.bright;
+    if (c.theme) inputs.theme.value = c.theme;
     
     // Clear file upload UI visually to indicate ready for new load
     imageUpload.value = '';
@@ -155,14 +157,17 @@ Object.values(inputs).forEach(input => {
 function renderCardDataToElement(container, data, isPrintLayout = false) {
     if(!container) return;
     
-    // Now that the HTML exists, find the elements and fill them
+    // 1. INJECT THE HTML THEME TEMPLATE
+    const theme = data.theme || 'classic';
+    container.innerHTML = CardThemes[theme].getHTML();
+
+    // 2. FIND AND FILL ELEMENTS
     const applyText = (targetStr, text) => {
         const el = container.querySelector(`[data-target="${targetStr}"]`);
-        if(el) el.innerHTML = (text || '').toString().replace(/\n/g, '<br>');
-        return el;
-    };
-        applyText('name', data.name);
-        return el; // Return the element so we can measure it below
+        if(el) {
+            el.innerHTML = (text || '').toString().replace(/\n/g, '<br>');
+        }
+        return el; 
     };
 
     const titleEl = applyText('name', data.name || 'Unnamed Item');
@@ -181,14 +186,11 @@ function renderCardDataToElement(container, data, isPrintLayout = false) {
     }
 
     // --- AUTO-SHRINK TEXT LOGIC ---
-    
-    // 1. Auto-shrink the Description & Rules block
     const textBodyContainer = container.querySelector('.flex-grow.overflow-hidden');
     if (textBodyContainer) {
         if (textBodyContainer.clientHeight > 0) {
             let size = 14; 
             textBodyContainer.style.fontSize = size + 'px';
-            
             while (textBodyContainer.scrollHeight > textBodyContainer.clientHeight && size > 8) {
                 size -= 0.5;
                 textBodyContainer.style.fontSize = size + 'px';
@@ -199,12 +201,10 @@ function renderCardDataToElement(container, data, isPrintLayout = false) {
         }
     }
 
-    // 2. Auto-shrink the Item Title
     if (titleEl) {
         if (titleEl.clientHeight > 0) {
             let titleSize = 24; 
             titleEl.style.fontSize = titleSize + 'px';
-            
             while (titleEl.scrollHeight > 60 && titleSize > 12) {
                 titleSize -= 1;
                 titleEl.style.fontSize = titleSize + 'px';
