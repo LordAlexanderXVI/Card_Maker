@@ -3,6 +3,10 @@ let currentTab = 0;
 
 // Default templates for all 4 cards
 const cardsData = [
+    {},
+    {},
+    {},
+    {}
 ];
 
 // Form Inputs
