@@ -162,6 +162,11 @@ body {
         break-after: auto !important;
     }
 
+    .parchment {
+        background-image: none !important;
+        box-shadow: none !important;
+    }
+    
     /* Style override for the cloned cards inside the print grid */
     #print-layout .card-face {
         position: relative !important;
