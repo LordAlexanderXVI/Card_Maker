@@ -3,10 +3,10 @@ let currentTab = 0;
 
 // Default templates for all 4 cards
 const cardsData = [
-    { name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 },
-    { name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 },
-    { name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 },
-    { name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 }
+    { theme: "classic", name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 },
+    { theme: "classic", name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 },
+    { theme: "classic", name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 },
+    { theme: "classic", name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 }  
 ];
 
 // Form Inputs
@@ -19,7 +19,8 @@ const inputs = {
     rules: document.getElementById('inputRules'),
     footerFront: document.getElementById('inputFooterFront'),
     footerBack: document.getElementById('inputFooterBack'),
-    brightness: document.getElementById('brightnessSlider')
+    brightness: document.getElementById('brightnessSlider'),
+    theme: document.getElementById('inputTheme'),
 };
 const brightnessVal = document.getElementById('brightnessVal');
 const imageUpload = document.getElementById('imageUpload');
@@ -151,16 +152,16 @@ Object.values(inputs).forEach(input => {
 // ----------------------------------------------------------------------
 // Rendering engine for Data -> HTML Elements
 // ----------------------------------------------------------------------
-function renderCardDataToElement(container, data) {
+function renderCardDataToElement(container, data, isPrintLayout = false) {
     if(!container) return;
     
+    // Now that the HTML exists, find the elements and fill them
     const applyText = (targetStr, text) => {
         const el = container.querySelector(`[data-target="${targetStr}"]`);
-        if(el) {
-            // FIX: Convert invisible text area line breaks (\n) into HTML line breaks (<br>)
-            // This preserves paragraph spacing and blank lines perfectly.
-            el.innerHTML = (text || '').toString().replace(/\n/g, '<br>');
-        }
+        if(el) el.innerHTML = (text || '').toString().replace(/\n/g, '<br>');
+        return el;
+    };
+        applyText('name', data.name);
         return el; // Return the element so we can measure it below
     };
 
