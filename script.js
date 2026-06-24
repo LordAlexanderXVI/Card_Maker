@@ -3,10 +3,10 @@ let currentTab = 0;
 
 // Default templates for all 4 cards
 const cardsData = [
-    { name: null, type: null, weight: null, attunement: false, desc: null, fFront: null, fBack: null, img: null, bright: 0 },
-    { name: null, type: null, weight: null, attunement: false, desc: null, fFront: null, fBack: null, img: null, bright: 0 },
-    { name: null, type: null, weight: null, attunement: false, desc: null, fFront: null, fBack: null, img: null, bright: 0 },
-    { name: null, type: null, weight: null, attunement: false, desc: null, fFront: null, fBack: null, img: null, bright: 0 }
+    { name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 },
+    { name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 },
+    { name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 },
+    { name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 }
 ];
 
 // Form Inputs
