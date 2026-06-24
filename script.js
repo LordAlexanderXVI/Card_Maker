@@ -336,40 +336,6 @@ function applyImageToCanvas(cardData, targetCanvas) {
     ctx.putImageData(imageData, 0, 0);
 }
 
-function drawPlaceholder(targetCanvas) {
-    if(!targetCanvas) return;
-    const ctx = targetCanvas.getContext('2d');
-    targetCanvas.width = 150;
-    targetCanvas.height = 150;
-    ctx.clearRect(0, 0, 150, 150);
-    ctx.fillStyle = '#1c1815';
-    ctx.beginPath();
-    ctx.moveTo(70, 130);
-    ctx.lineTo(80, 130);
-    ctx.lineTo(80, 50);
-    ctx.lineTo(95, 50);
-    ctx.lineTo(95, 40);
-    ctx.lineTo(80, 40);
-    ctx.lineTo(75, 10);
-    ctx.lineTo(70, 40);
-    ctx.lineTo(55, 40);
-    ctx.lineTo(55, 50);
-    ctx.lineTo(70, 50);
-    ctx.closePath();
-    ctx.fill();
-    
-    // Retro printed noise
-    const imgData = ctx.getImageData(0,0,150,150);
-    for(let i=0; i<imgData.data.length; i+=4){
-        if(imgData.data[i+3] > 0) {
-            if(Math.random() > 0.8) {
-                imgData.data[i+3] = 0;
-            }
-        }
-    }
-    ctx.putImageData(imgData, 0, 0);
-}
-
 // Initialize sequence on startup
 window.onload = () => {
     setupPrintDOM();
