@@ -86,6 +86,19 @@
             </div>
         </div>
 
+        <div>
+            <label class="block text-xs font-medium text-gray-400 mb-1">Card Theme</label>
+            <select id="inputTheme" class="w-full bg-gray-900 border border-gray-600 rounded p-2 text-white">
+                <option value="classic">Classic AD&D</option>
+                <option value="minimalist">Modern Minimalist</option>
+            </select>
+        </div>
+        
+        <div class="scene" id="cardScene">
+            <div class="card shadow-2xl" id="theCard">
+                </div>
+        </div>
+
         <button onclick="window.print()" class="w-full bg-amber-700 hover:bg-amber-600 text-white font-bold py-3 px-4 rounded mt-4 transition-colors flex items-center justify-center gap-2">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
             Print / Export All 4 Cards
@@ -100,35 +113,6 @@
 
         <div class="scene" id="cardScene">
             <div class="card shadow-2xl" id="theCard">
-                
-                <div class="card-face card-face-front parchment p-6 flex flex-col">
-                    <div class="add-border"></div>
-                    
-                    <div class="relative z-10 flex flex-col h-full pl-3 pr-3 pt-4 pb-2">
-                        <div class="text-center mb-2">
-                            <h2 data-target="name" class="card-title text-2xl leading-none uppercase tracking-wide"></h2>
-                            <p data-target="type" class="card-body text-sm italic mt-1"></p>
-                        </div>
-                        
-                        <div class="separator"></div>
-                        
-                        <div class="flex justify-between card-body text-sm font-bold px-2">
-                            <span>Weight: <span data-target="weight"></span></span>
-                            <span data-target="attunement" class="italic font-normal hidden">Requires Attunement</span>
-                        </div>
-                        
-                        <div class="separator"></div>
-
-                        <div class="card-body text-sm mt-2 flex-grow overflow-hidden flex flex-col">
-                            <p data-target="desc" class="italic mb-3 text-justify leading-snug">
-                            </p>
-                            <p data-target="rules" class="text-justify leading-snug font-medium">
-                            </p>
-                        </div>
-
-                        <div data-target="footerFront" class="mt-auto pt-2 text-center text-xs card-body opacity-70">
-                            ~ D&D Item ~
-                        </div>
                     </div>
                 </div>
 
