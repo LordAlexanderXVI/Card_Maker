@@ -316,7 +316,7 @@ function applyImageToCanvas(cardData, targetCanvas) {
         }
     }
 
-    Target ink color: #1c1815 -> R:28, G:24, B:21
+    Target ink color: #1c1815 -> R:28, G:24, B:21 {
         for (let i = 0; i < gray.length; i++) {
             const val = gray[i];
             const idx = i * 4;
