@@ -153,9 +153,14 @@ Object.values(inputs).forEach(input => {
 // ----------------------------------------------------------------------
 function renderCardDataToElement(container, data) {
     if(!container) return;
+    
     const applyText = (targetStr, text) => {
         const el = container.querySelector(`[data-target="${targetStr}"]`);
-        if(el) el.textContent = text;
+        if(el) {
+            // FIX: Convert invisible text area line breaks (\n) into HTML line breaks (<br>)
+            // This preserves paragraph spacing and blank lines perfectly.
+            el.innerHTML = (text || '').toString().replace(/\n/g, '<br>');
+        }
         return el; // Return the element so we can measure it below
     };
 
@@ -174,25 +179,21 @@ function renderCardDataToElement(container, data) {
         else attEl.classList.add('hidden');
     }
 
-    // --- NEW: AUTO-SHRINK TEXT LOGIC ---
+    // --- AUTO-SHRINK TEXT LOGIC ---
     
     // 1. Auto-shrink the Description & Rules block
     const textBodyContainer = container.querySelector('.flex-grow.overflow-hidden');
     if (textBodyContainer) {
-        // We only measure if the element is currently visible on screen (clientHeight > 0)
         if (textBodyContainer.clientHeight > 0) {
-            let size = 14; // Start at default size (14px)
+            let size = 14; 
             textBodyContainer.style.fontSize = size + 'px';
             
-            // While the text overflows its container, shrink it by 0.5px
             while (textBodyContainer.scrollHeight > textBodyContainer.clientHeight && size > 8) {
                 size -= 0.5;
                 textBodyContainer.style.fontSize = size + 'px';
             }
-            // Save this calculated size into the data object for the hidden print cards
             data.bodyFontSize = size;
         } else if (data.bodyFontSize) {
-            // If this is a hidden print layout card, apply the saved size directly
             textBodyContainer.style.fontSize = data.bodyFontSize + 'px';
         }
     }
@@ -200,10 +201,9 @@ function renderCardDataToElement(container, data) {
     // 2. Auto-shrink the Item Title
     if (titleEl) {
         if (titleEl.clientHeight > 0) {
-            let titleSize = 24; // Start at default size (24px)
+            let titleSize = 24; 
             titleEl.style.fontSize = titleSize + 'px';
             
-            // If the title is forced to wrap and takes up more than 60px (approx 3 lines), shrink it
             while (titleEl.scrollHeight > 60 && titleSize > 12) {
                 titleSize -= 1;
                 titleEl.style.fontSize = titleSize + 'px';
@@ -334,6 +334,40 @@ function applyImageToCanvas(cardData, targetCanvas) {
     }
 
     ctx.putImageData(imageData, 0, 0);
+}
+
+function drawPlaceholder(targetCanvas) {
+    if(!targetCanvas) return;
+    const ctx = targetCanvas.getContext('2d');
+    targetCanvas.width = 150;
+    targetCanvas.height = 150;
+    ctx.clearRect(0, 0, 150, 150);
+    ctx.fillStyle = '#1c1815';
+    ctx.beginPath();
+    ctx.moveTo(70, 130);
+    ctx.lineTo(80, 130);
+    ctx.lineTo(80, 50);
+    ctx.lineTo(95, 50);
+    ctx.lineTo(95, 40);
+    ctx.lineTo(80, 40);
+    ctx.lineTo(75, 10);
+    ctx.lineTo(70, 40);
+    ctx.lineTo(55, 40);
+    ctx.lineTo(55, 50);
+    ctx.lineTo(70, 50);
+    ctx.closePath();
+    ctx.fill();
+    
+    // Retro printed noise
+    const imgData = ctx.getImageData(0,0,150,150);
+    for(let i=0; i<imgData.data.length; i+=4){
+        if(imgData.data[i+3] > 0) {
+            if(Math.random() > 0.8) {
+                imgData.data[i+3] = 0;
+            }
+        }
+    }
+    ctx.putImageData(imgData, 0, 0);
 }
 
 // Initialize sequence on startup
