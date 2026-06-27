@@ -3,7 +3,7 @@ let currentTab = 0;
 
 // Default templates for all 4 cards
 const cardsData = [
-    { name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 },
+    { name: "Ring of Protection +1", type: "Ring", weight: "-", attunement: true, desc: "A perfectly smooth silver band that reflects light with an unnatural brilliance.", rules: "Grants the wearer a +1 bonus to Armor Class and all saving throws. Multiple rings of protection do not stack their effects.", fFront: "~ D&D Item ~", fBack: "Illustration", img: null, bright: 0 },
     { name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 },
     { name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 },
     { name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 }
