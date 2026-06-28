@@ -1,0 +1,78 @@
+/* --- ARCANE FORGE FANTASY UI OVERRIDES --- */
+
+/* 1. The Environment: From a gray void to a candle-lit tabletop */
+body {
+    background: radial-gradient(circle at center, #2c241b 0%, #0c0a08 100%) !important;
+    color: #e5e7eb;
+}
+
+/* 2. The Sidebar: Dark leather and worn wood aesthetics */
+aside {
+    background-color: #1a1612 !important;
+    border-right: 2px solid #4a3826 !important;
+    box-shadow: 15px 0 40px rgba(0, 0, 0, 0.9) !important;
+}
+
+/* 3. Typography Integration: Bleed the fantasy fonts into the UI */
+/* Makes labels, headers, and tabs feel more authentic */
+aside label, aside p {
+    font-family: 'IM Fell English', serif !important;
+    color: #bfa78a !important;
+    font-size: 1.1rem;
+}
+
+/* 4. The Artisan's Tools: Inputs look like carved obsidian/dark stone */
+input[type="text"], input[type="number"], textarea, select, input[type="file"] {
+    background-color: #0c0a08 !important;
+    border: 1px solid #3d2f21 !important;
+    color: #d1d5db !important;
+    border-radius: 4px !important;
+    transition: all 0.3s ease;
+}
+
+/* Magical amber glow when typing */
+input:focus, textarea:focus, select:focus {
+    outline: none !important;
+    border-color: #d97706 !important;
+    box-shadow: 0 0 12px rgba(217, 119, 6, 0.2) !important;
+}
+
+/* 5. Tab Buttons: Worn brass and glowing active states */
+.tab-btn {
+    background-color: #241d17 !important;
+    border: 1px solid #3d2f21 !important;
+    color: #786452 !important;
+    font-family: 'Uncial Antiqua', serif !important;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.tab-btn:hover {
+    background-color: #31271f !important;
+    color: #a38c74 !important;
+}
+
+/* The active tab lights up like a magical rune */
+.tab-btn.bg-amber-600 {
+    background-color: #d97706 !important;
+    color: #1a1612 !important;
+    border-color: #fbbf24 !important;
+    box-shadow: 0 0 15px rgba(217, 119, 6, 0.4) !important;
+    text-shadow: none !important;
+}
+
+/* 6. Custom Fantasy Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-track {
+    background: #1a1612;
+    border-left: 1px solid #2c241b;
+}
+::-webkit-scrollbar-thumb {
+    background: #4a3826;
+    border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #d97706;
+}
