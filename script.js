@@ -398,3 +398,130 @@ window.onload = () => {
     loadStateIntoInputs();
     updateAllVisuals();
 };
+
+// ----------------------------------------------------------------------
+// Steganography: PNG Chunk Injection 
+// ----------------------------------------------------------------------
+
+// Standard CRC32 table for PNG checksum validation
+const crcTable = new Uint32Array(256);
+for (let n = 0; n < 256; n++) {
+    let c = n;
+    for (let k = 0; k < 8; k++) { c = ((c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1)); }
+    crcTable[n] = c;
+}
+
+function crc32(data) {
+    let crc = 0 ^ (-1);
+    for (let i = 0; i < data.length; i++) {
+        crc = (crc >>> 8) ^ crcTable[(crc ^ data[i]) & 0xFF];
+    }
+    return (crc ^ (-1)) >>> 0;
+}
+
+function extractTextChunk(arrayBuffer, targetKeyword) {
+    const view = new DataView(arrayBuffer);
+    const bytes = new Uint8Array(arrayBuffer);
+    
+    // Check standard PNG file signature
+    if (bytes[0] !== 137 || bytes[1] !== 80 || bytes[2] !== 78 || bytes[3] !== 71) return null; 
+
+    let offset = 8;
+    while (offset < view.byteLength) {
+        const length = view.getUint32(offset);
+        const type = String.fromCharCode(bytes[offset+4], bytes[offset+5], bytes[offset+6], bytes[offset+7]);
+        
+        if (type === 'tEXt') {
+            const dataBytes = bytes.slice(offset + 8, offset + 8 + length);
+            const nullIdx = dataBytes.indexOf(0);
+            if (nullIdx !== -1) {
+                const keyword = new TextDecoder().decode(dataBytes.slice(0, nullIdx));
+                if (keyword === targetKeyword) {
+                    return new TextDecoder().decode(dataBytes.slice(nullIdx + 1));
+                }
+            }
+        }
+        offset += 12 + length; // Skip past Length (4) + Type (4) + Data (length) + CRC (4)
+    }
+    return null;
+}
+
+function injectTextChunk(dataURL, keyword, textData) {
+    const b64Data = dataURL.split(',')[1];
+    const binaryStr = atob(b64Data);
+    const bytes = new Uint8Array(binaryStr.length);
+    for(let i = 0; i < binaryStr.length; i++) bytes[i] = binaryStr.charCodeAt(i);
+
+    const encoder = new TextEncoder();
+    const kwBytes = encoder.encode(keyword);
+    const textBytes = encoder.encode(textData);
+    
+    // Chunk Data = Keyword + Null Byte separator + Text Payload
+    const chunkData = new Uint8Array(kwBytes.length + 1 + textBytes.length);
+    chunkData.set(kwBytes, 0);
+    chunkData[kwBytes.length] = 0; 
+    chunkData.set(textBytes, kwBytes.length + 1);
+
+    const length = chunkData.length;
+    const type = encoder.encode('tEXt');
+
+    // Calculate CRC Checksum over Type + Data
+    const crcData = new Uint8Array(4 + length);
+    crcData.set(type, 0);
+    crcData.set(chunkData, 4);
+    const crc = crc32(crcData);
+
+    // Build new byte chunk (Length [4] + Type [4] + Data [length] + CRC [4])
+    const newChunk = new Uint8Array(12 + length);
+    const view = new DataView(newChunk.buffer);
+    view.setUint32(0, length);
+    newChunk.set(type, 4);
+    newChunk.set(chunkData, 8);
+    view.setUint32(8 + length, crc);
+
+    // Splice new chunk into original file immediately after IHDR chunk (always at byte 33)
+    const out = new Uint8Array(bytes.length + newChunk.length);
+    out.set(bytes.slice(0, 33), 0);
+    out.set(newChunk, 33);
+    out.set(bytes.slice(33), 33 + newChunk.length);
+
+    return new Blob([out], { type: 'image/png' });
+}
+
+function exportEmbeddedImage() {
+    saveCurrentTabState();
+    
+    const dataToSave = { ...cardsData[currentTab] };
+    delete dataToSave.img; // Do not stringify the HTMLImageElement
+    const jsonStr = JSON.stringify(dataToSave);
+
+    // Use original image as carrier if it exists, otherwise fall back to drawing placeholder
+    const tempCanvas = document.createElement('canvas');
+    const ctx = tempCanvas.getContext('2d');
+    const currentImg = cardsData[currentTab].img;
+
+    if (currentImg) {
+        tempCanvas.width = currentImg.width;
+        tempCanvas.height = currentImg.height;
+        ctx.drawImage(currentImg, 0, 0);
+    } else {
+        drawPlaceholder(tempCanvas);
+    }
+
+    // Force conversion to PNG to ensure standard chunk architecture
+    const dataURL = tempCanvas.toDataURL('image/png');
+    
+    try {
+        const blob = injectTextChunk(dataURL, 'arcaneData', jsonStr);
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        // Clean up the name and append _Magic so the user knows it has data
+        a.download = (dataToSave.name || 'Arcane_Item').replace(/\s+/g, '_') + '_Magic.png';
+        a.click();
+        URL.revokeObjectURL(url);
+    } catch(e) {
+        console.error(e);
+        alert("Error exporting Magic PNG.");
+    }
+}
