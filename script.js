@@ -237,6 +237,25 @@ imageUpload.addEventListener('change', function(e) {
 
     const reader = new FileReader();
     reader.onload = function(event) {
+        const arrayBuffer = event.target.result;
+        
+        // 1. Try to extract hidden 'arcaneData' from the file binary
+        const embeddedJson = extractTextChunk(arrayBuffer, 'arcaneData');
+        if (embeddedJson) {
+            try {
+                const parsed = JSON.parse(embeddedJson);
+                // Merge parsed data (exclude the HTML image obj)
+                Object.assign(cardsData[currentTab], parsed);
+                loadStateIntoInputs(); 
+                console.log("Magic PNG stats successfully restored!");
+            } catch (err) {
+                console.error("Failed to parse embedded data", err);
+            }
+        }
+
+        // 2. Load the visual image normally
+        const blob = new Blob([arrayBuffer], { type: file.type });
+        const url = URL.createObjectURL(blob);
         const img = new Image();
         img.onload = function() {
             cardsData[currentTab].img = img;
@@ -245,10 +264,13 @@ imageUpload.addEventListener('change', function(e) {
             if (!theCard.classList.contains('is-flipped')) {
                 theCard.classList.add('is-flipped');
             }
+            URL.revokeObjectURL(url);
         };
-        img.src = event.target.result;
+        img.src = url;
+        
+        e.target.value = ''; // Reset input so same file can be uploaded again if needed
     };
-    reader.readAsDataURL(file);
+    reader.readAsArrayBuffer(file);
 });
 
 function applyImageToCanvas(cardData, targetCanvas) {
