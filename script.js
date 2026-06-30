@@ -157,11 +157,9 @@ function renderCardDataToElement(container, data) {
     const applyText = (targetStr, text) => {
         const el = container.querySelector(`[data-target="${targetStr}"]`);
         if(el) {
-            // FIX: Convert invisible text area line breaks (\n) into HTML line breaks (<br>)
-            // This preserves paragraph spacing and blank lines perfectly.
             el.innerHTML = (text || '').toString().replace(/\n/g, '<br>');
         }
-        return el; // Return the element so we can measure it below
+        return el;
     };
 
     const titleEl = applyText('name', data.name || 'Unnamed Item');
@@ -182,7 +180,7 @@ function renderCardDataToElement(container, data) {
    // --- AUTO-SHRINK TEXT LOGIC ---
     
     // 1. Auto-shrink the Description & Rules block
-    const textBodyContainer = container.querySelector('.card-body.flex-grow');
+    const textBodyContainer = container.querySelector('[data-target="body"]');
     if (textBodyContainer) {
         if (textBodyContainer.clientHeight > 0) {
             let size = 22; // Bumped up base size for maximum readability
