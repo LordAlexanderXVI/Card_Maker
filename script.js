@@ -215,11 +215,6 @@ function renderCardDataToElement(container, data) {
             
             data.titleFontSize = titleSize;
         } 
-        
-        else {
-            // FIXED: Default to 26px if it hasn't been viewed on screen yet
-            titleEl.style.fontSize = (data.titleFontSize || 26) + 'px';
-        }
     }
 }
 
