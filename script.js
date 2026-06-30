@@ -185,7 +185,7 @@ function renderCardDataToElement(container, data) {
     if (textBodyContainer) {
         
         if (textBodyContainer.clientHeight > 0) {
-            let size = 18; // Bumped up base size for maximum readability
+            let size = 12; // Bumped up base size for maximum readability
             textBodyContainer.style.fontSize = size + 'px';
             
             while (textBodyContainer.scrollHeight > textBodyContainer.clientHeight && size > 8) {
