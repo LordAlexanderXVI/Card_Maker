@@ -126,10 +126,6 @@ body {
         print-color-adjust: exact !important;
     }
 
-    .card-body p {
-        font-size: inherit !important;
-    }
-
     /* Hide all interactive UI elements */
     aside, main, .scene {
         display: none !important;
