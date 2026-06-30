@@ -181,7 +181,9 @@ function renderCardDataToElement(container, data) {
     
 // 1. Auto-shrink the Description & Rules block
     const textBodyContainer = container.querySelector('.flex-grow.overflow-hidden');
+    
     if (textBodyContainer) {
+        
         if (textBodyContainer.clientHeight > 0) {
             let size = 18; // Bumped up base size for maximum readability
             textBodyContainer.style.fontSize = size + 'px';
@@ -190,8 +192,11 @@ function renderCardDataToElement(container, data) {
                 size -= 0.5;
                 textBodyContainer.style.fontSize = size + 'px';
             }
+            
             data.bodyFontSize = size;
-        } else {
+        } 
+        
+        else {
             // FIXED: If this is a hidden print card, use the saved size OR default to 18px
             textBodyContainer.style.fontSize = (data.bodyFontSize || 18) + 'px';
         }
@@ -207,12 +212,16 @@ function renderCardDataToElement(container, data) {
                 titleSize -= 1;
                 titleEl.style.fontSize = titleSize + 'px';
             }
+            
             data.titleFontSize = titleSize;
-        } else {
+        } 
+        
+        else {
             // FIXED: Default to 26px if it hasn't been viewed on screen yet
             titleEl.style.fontSize = (data.titleFontSize || 26) + 'px';
         }
     }
+}
 
 function updateAllVisuals() {
     // Render Active UI Card
