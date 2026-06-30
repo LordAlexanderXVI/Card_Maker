@@ -179,13 +179,13 @@ function renderCardDataToElement(container, data) {
         else attEl.classList.add('hidden');
     }
 
-    // --- AUTO-SHRINK TEXT LOGIC ---
+   // --- AUTO-SHRINK TEXT LOGIC ---
     
     // 1. Auto-shrink the Description & Rules block
     const textBodyContainer = container.querySelector('.flex-grow.overflow-hidden');
     if (textBodyContainer) {
         if (textBodyContainer.clientHeight > 0) {
-            let size = 17; 
+            let size = 18; // Bumped up base size for maximum readability
             textBodyContainer.style.fontSize = size + 'px';
             
             while (textBodyContainer.scrollHeight > textBodyContainer.clientHeight && size > 8) {
@@ -193,15 +193,16 @@ function renderCardDataToElement(container, data) {
                 textBodyContainer.style.fontSize = size + 'px';
             }
             data.bodyFontSize = size;
-        } else if (data.bodyFontSize) {
-            textBodyContainer.style.fontSize = data.bodyFontSize + 'px';
+        } else {
+            // FIXED: If this is a hidden print card, use the saved size OR default to 18px
+            textBodyContainer.style.fontSize = (data.bodyFontSize || 18) + 'px';
         }
     }
 
     // 2. Auto-shrink the Item Title
     if (titleEl) {
         if (titleEl.clientHeight > 0) {
-            let titleSize = 24; 
+            let titleSize = 26; // Bumped up title size
             titleEl.style.fontSize = titleSize + 'px';
             
             while (titleEl.scrollHeight > 60 && titleSize > 12) {
@@ -209,11 +210,11 @@ function renderCardDataToElement(container, data) {
                 titleEl.style.fontSize = titleSize + 'px';
             }
             data.titleFontSize = titleSize;
-        } else if (data.titleFontSize) {
-            titleEl.style.fontSize = data.titleFontSize + 'px';
+        } else {
+            // FIXED: Default to 26px if it hasn't been viewed on screen yet
+            titleEl.style.fontSize = (data.titleFontSize || 26) + 'px';
         }
     }
-}
 
 function updateAllVisuals() {
     // Render Active UI Card
