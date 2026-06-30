@@ -185,7 +185,7 @@ function renderCardDataToElement(container, data) {
     const textBodyContainer = container.querySelector('.flex-grow.overflow-hidden');
     if (textBodyContainer) {
         if (textBodyContainer.clientHeight > 0) {
-            let size = 18; // Bumped up base size for maximum readability
+            let size = 22; // Bumped up base size for maximum readability
             textBodyContainer.style.fontSize = size + 'px';
             
             while (textBodyContainer.scrollHeight > textBodyContainer.clientHeight && size > 8) {
@@ -202,7 +202,7 @@ function renderCardDataToElement(container, data) {
     // 2. Auto-shrink the Item Title
     if (titleEl) {
         if (titleEl.clientHeight > 0) {
-            let titleSize = 26; // Bumped up title size
+            let titleSize = 28; // Bumped up title size
             titleEl.style.fontSize = titleSize + 'px';
             
             while (titleEl.scrollHeight > 60 && titleSize > 12) {
