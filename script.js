@@ -182,7 +182,7 @@ function renderCardDataToElement(container, data) {
    // --- AUTO-SHRINK TEXT LOGIC ---
     
     // 1. Auto-shrink the Description & Rules block
-    const textBodyContainer = container.querySelector('.flex-grow.overflow-hidden');
+    const textBodyContainer = container.querySelector('.card-body.flex-grow');
     if (textBodyContainer) {
         if (textBodyContainer.clientHeight > 0) {
             let size = 22; // Bumped up base size for maximum readability
