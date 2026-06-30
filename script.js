@@ -185,7 +185,7 @@ function renderCardDataToElement(container, data) {
     const textBodyContainer = container.querySelector('.flex-grow.overflow-hidden');
     if (textBodyContainer) {
         if (textBodyContainer.clientHeight > 0) {
-            let size = 14; 
+            let size = 17; 
             textBodyContainer.style.fontSize = size + 'px';
             
             while (textBodyContainer.scrollHeight > textBodyContainer.clientHeight && size > 8) {
