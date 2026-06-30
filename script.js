@@ -215,6 +215,7 @@ function renderCardDataToElement(container, data) {
             titleEl.style.fontSize = (data.titleFontSize || 26) + 'px';
         }
     }
+}
 
 function updateAllVisuals() {
     // Render Active UI Card
