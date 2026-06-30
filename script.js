@@ -179,11 +179,11 @@ function renderCardDataToElement(container, data) {
 
    // --- AUTO-SHRINK TEXT LOGIC ---
     
-    // 1. Auto-shrink the Description & Rules block
-    const textBodyContainer = container.querySelector('[data-target="body"]');
+// 1. Auto-shrink the Description & Rules block
+    const textBodyContainer = container.querySelector('.flex-grow.overflow-hidden');
     if (textBodyContainer) {
         if (textBodyContainer.clientHeight > 0) {
-            let size = 22; // Bumped up base size for maximum readability
+            let size = 18; // Bumped up base size for maximum readability
             textBodyContainer.style.fontSize = size + 'px';
             
             while (textBodyContainer.scrollHeight > textBodyContainer.clientHeight && size > 8) {
@@ -200,7 +200,7 @@ function renderCardDataToElement(container, data) {
     // 2. Auto-shrink the Item Title
     if (titleEl) {
         if (titleEl.clientHeight > 0) {
-            let titleSize = 28; // Bumped up title size
+            let titleSize = 26; // Bumped up title size
             titleEl.style.fontSize = titleSize + 'px';
             
             while (titleEl.scrollHeight > 60 && titleSize > 12) {
@@ -213,7 +213,6 @@ function renderCardDataToElement(container, data) {
             titleEl.style.fontSize = (data.titleFontSize || 26) + 'px';
         }
     }
-}
 
 function updateAllVisuals() {
     // Render Active UI Card
