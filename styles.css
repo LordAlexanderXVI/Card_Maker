@@ -51,11 +51,10 @@ body {
 
 /* 3D Card Flip Mechanics (Main UI Only) */
 .scene {
-    width: 350px;
-    height: 500px;
+    width: 95.25mm;  /* Matched to print layout */
+    height: 133.35mm; /* Matched to print layout */
     perspective: 1200px;
     cursor: pointer;
-    zoom: 200%;
 }
 
 .card {
