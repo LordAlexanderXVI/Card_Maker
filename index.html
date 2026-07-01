@@ -28,23 +28,37 @@
         <div class="space-y-4 flex-grow">
             <div>
                 <label class="block text-xs font-medium text-gray-400 mb-1">Item Name</label>
-                <input type="text" id="inputName" class="w-full bg-gray-900 border border-gray-600 rounded p-2 text-white focus:outline-none focus:border-amber-500 transition-colors">
+                <input type="text" id="inputName" class="w-full bg-gray-900 border border-gray-600 rounded p-2 text-white focus:outline-none focus:border-amber-500">
             </div>
 
-            <div class="flex gap-4">
-                <div class="w-1/2">
-                    <label class="block text-xs font-medium text-gray-400 mb-1">Type / Category</label>
-                    <input type="text" id="inputType" class="w-full bg-gray-900 border border-gray-600 rounded p-2 text-white focus:outline-none focus:border-amber-500">
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-medium text-gray-400 mb-1">Type</label>
+                    <input type="text" id="inputType" placeholder="e.g. Wondrous Item" class="w-full bg-gray-900 border border-gray-600 rounded p-2 text-white focus:outline-none focus:border-amber-500">
                 </div>
-                <div class="w-1/2">
+                <div>
+                    <label class="block text-xs font-medium text-gray-400 mb-1">Rarity</label>
+                    <select id="inputRarity" class="w-full bg-gray-900 border border-gray-600 rounded p-2 text-white focus:outline-none focus:border-amber-500">
+                        <option value="">None</option>
+                        <option value="Common">Common</option>
+                        <option value="Uncommon">Uncommon</option>
+                        <option value="Rare">Rare</option>
+                        <option value="Very Rare">Very Rare</option>
+                        <option value="Legendary">Legendary</option>
+                        <option value="Artifact">Artifact</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
                     <label class="block text-xs font-medium text-gray-400 mb-1">Weight</label>
-                    <input type="text" id="inputWeight" class="w-full bg-gray-900 border border-gray-600 rounded p-2 text-white focus:outline-none focus:border-amber-500">
+                    <input type="text" id="inputWeight" placeholder="e.g. 2 lbs" class="w-full bg-gray-900 border border-gray-600 rounded p-2 text-white focus:outline-none focus:border-amber-500">
                 </div>
-            </div>
-
-            <div class="flex items-center gap-2">
-                <input type="checkbox" id="inputAttunement" class="w-4 h-4 text-amber-500 bg-gray-900 border-gray-600 rounded focus:ring-amber-500 focus:ring-offset-gray-800 cursor-pointer">
-                <label class="text-xs font-medium text-gray-400 cursor-pointer" for="inputAttunement">Requires Attunement</label>
+                <div class="flex items-center mt-6">
+                    <input type="checkbox" id="inputAttunement" class="w-4 h-4 text-amber-500 bg-gray-900 border-gray-600 rounded focus:ring-amber-500 focus:ring-2">
+                    <label class="ml-2 text-xs font-medium text-gray-400">Requires Attunement</label>
+                </div>
             </div>
 
             <div>
