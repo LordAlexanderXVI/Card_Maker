@@ -52,8 +52,8 @@ body {
 
 /* 3D Card Flip Mechanics (Main UI Only) */
 .scene {
-    width: 95.25mm;  /* Matched to print layout */
-    height: 133.35mm; /* Matched to print layout */
+    width: 95mm;  /* Matched to print layout */
+    height: 133mm; /* Matched to print layout */
     perspective: 1200px;
     cursor: pointer;
 }
@@ -136,8 +136,8 @@ body {
         display: grid !important;
         
         /* Perfect 1.5x Playing Card size with 5mm cutting gap */
-        grid-template-columns: 95.25mm 95.25mm !important;
-        grid-template-rows: 133.35mm 133.35mm !important;
+        grid-template-columns: 95mm 95mm !important;
+        grid-template-rows: 133mm 133mm !important;
         gap: 5mm !important;
         
         /* Center the entire 2x2 grid physically on the paper */
