@@ -27,9 +27,15 @@ const brightnessVal = document.getElementById('brightnessVal');
 const imageUpload = document.getElementById('imageUpload');
 
 // 3D Card Interaction
-const theCard = document.getElementById('theCard');
-document.getElementById('cardScene').addEventListener('click', () => {
-    theCard.classList.toggle('is-flipped');
+document.addEventListener('DOMContentLoaded', () => {
+    const theCard = document.getElementById('theCard');
+    const cardScene = document.getElementById('cardScene');
+
+    if (cardScene && theCard) {
+        cardScene.addEventListener('click', () => {
+            theCard.classList.toggle('is-flipped');
+        });
+    }
 });
 
 // ----------------------------------------------------------------------
