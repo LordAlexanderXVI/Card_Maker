@@ -234,6 +234,7 @@ function renderCardDataToElement(container, data) {
             }
         }
     }
+}
 
     // --- 4. AUTO-SHRINK ITEM TITLE (Front Face) ---
     if (titleEl) {
