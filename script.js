@@ -157,9 +157,11 @@ function renderCardDataToElement(container, data) {
     const applyText = (targetStr, text) => {
         const el = container.querySelector(`[data-target="${targetStr}"]`);
         if(el) {
+            // FIX: Convert invisible text area line breaks (\n) into HTML line breaks (<br>)
+            // This preserves paragraph spacing and blank lines perfectly.
             el.innerHTML = (text || '').toString().replace(/\n/g, '<br>');
         }
-        return el;
+        return el; // Return the element so we can measure it below
     };
 
     const titleEl = applyText('name', data.name || 'Unnamed Item');
@@ -177,44 +179,39 @@ function renderCardDataToElement(container, data) {
         else attEl.classList.add('hidden');
     }
 
-   // --- AUTO-SHRINK TEXT LOGIC ---
+    // --- AUTO-SHRINK TEXT LOGIC ---
     
-// 1. Auto-shrink the Description & Rules block
+    // 1. Auto-shrink the Description & Rules block
     const textBodyContainer = container.querySelector('.flex-grow.overflow-hidden');
-    
     if (textBodyContainer) {
-        
         if (textBodyContainer.clientHeight > 0) {
-            let size = 12; // Bumped up base size for maximum readability
+            let size = 14; 
             textBodyContainer.style.fontSize = size + 'px';
             
             while (textBodyContainer.scrollHeight > textBodyContainer.clientHeight && size > 8) {
                 size -= 0.5;
                 textBodyContainer.style.fontSize = size + 'px';
             }
-            
             data.bodyFontSize = size;
-        } 
-        
-        else {
-            // FIXED: If this is a hidden print card, use the saved size OR default to 18px
-            textBodyContainer.style.fontSize = (data.bodyFontSize || 18) + 'px';
+        } else if (data.bodyFontSize) {
+            textBodyContainer.style.fontSize = data.bodyFontSize + 'px';
         }
     }
 
     // 2. Auto-shrink the Item Title
     if (titleEl) {
         if (titleEl.clientHeight > 0) {
-            let titleSize = 26; // Bumped up title size
+            let titleSize = 24; 
             titleEl.style.fontSize = titleSize + 'px';
             
             while (titleEl.scrollHeight > 60 && titleSize > 12) {
                 titleSize -= 1;
                 titleEl.style.fontSize = titleSize + 'px';
             }
-            
             data.titleFontSize = titleSize;
-        } 
+        } else if (data.titleFontSize) {
+            titleEl.style.fontSize = data.titleFontSize + 'px';
+        }
     }
 }
 
