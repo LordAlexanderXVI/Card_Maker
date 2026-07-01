@@ -3,17 +3,16 @@ let currentTab = 0;
 
 // Default templates for all 4 cards
 const cardsData = [
-    { name: "Ring of Protection +1", type: "Ring", rarity: "Rare", weight: "-", attunement: true, desc: "A perfectly smooth silver band that reflects light with an unnatural brilliance.", rules: "Grants the wearer a +1 bonus to Armor Class and all saving throws. Multiple rings of protection do not stack their effects.", fFront: "~ D&D Item ~", fBack: "Illustration", img: null, bright: 0 },
-    { name: null, type: null, rarity: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 },
-    { name: null, type: null, rarity: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 },
-    { name: null, type: null, rarity: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 }
+    { name: "Ring of Protection +1", type: "Ring", weight: "-", attunement: true, desc: "A perfectly smooth silver band that reflects light with an unnatural brilliance.", rules: "Grants the wearer a +1 bonus to Armor Class and all saving throws. Multiple rings of protection do not stack their effects.", fFront: "~ D&D Item ~", fBack: "Illustration", img: null, bright: 0 },
+    { name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 },
+    { name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 },
+    { name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 }
 ];
 
 // Form Inputs
 const inputs = {
     name: document.getElementById('inputName'),
     type: document.getElementById('inputType'),
-    rarity: document.getElementById('inputRarity'),
     weight: document.getElementById('inputWeight'),
     attunement: document.getElementById('inputAttunement'),
     desc: document.getElementById('inputDesc'),
@@ -22,10 +21,9 @@ const inputs = {
     footerBack: document.getElementById('inputFooterBack'),
     brightness: document.getElementById('brightnessSlider'),
     descSpacing: document.getElementById('inputDescSpacing'),
-    fontSize: document.getElementById('inputFontSize'),
+    fontSize: document.getElementById('inputFontSize')
 };
 const brightnessVal = document.getElementById('brightnessVal');
-const gapVal = document.getElementById('gapVal');
 const imageUpload = document.getElementById('imageUpload');
 
 // 3D Card Interaction
@@ -109,7 +107,6 @@ function saveCurrentTabState() {
     const c = cardsData[currentTab];
     c.name = inputs.name.value;
     c.type = inputs.type.value;
-    c.rarity = inputs.rarity.value;
     c.weight = inputs.weight.value;
     c.attunement = inputs.attunement.checked;
     c.desc = inputs.desc.value;
@@ -125,22 +122,17 @@ function loadStateIntoInputs() {
     const c = cardsData[currentTab];
     inputs.name.value = c.name;
     inputs.type.value = c.type;
-    inputs.rarity.value = c.rarity || '';
     inputs.weight.value = c.weight;
     inputs.attunement.checked = c.attunement;
     inputs.desc.value = c.desc;
     inputs.rules.value = c.rules;
     inputs.footerFront.value = c.fFront;
     inputs.footerBack.value = c.fBack;
-    
     inputs.brightness.value = c.bright;
     brightnessVal.textContent = c.bright;
-    
     inputs.descSpacing.value = c.descSpacing !== undefined ? c.descSpacing : 12;
-    if(gapVal) gapVal.textContent = inputs.descSpacing.value;
-    
+    gapVal.textContent = inputs.descSpacing.value;
     inputs.fontSize.value = c.fontSizeOverride || '';
-    
     // Clear file upload UI visually to indicate ready for new load
     imageUpload.value = '';
 }
@@ -153,7 +145,7 @@ Object.values(inputs).forEach(input => {
         if(input === inputs.brightness) {
             brightnessVal.textContent = input.value;
         }
-        if(input === inputs.descSpacing && gapVal) {
+        if(input === inputs.descSpacing) {
             gapVal.textContent = input.value;
         }
     });
@@ -174,38 +166,26 @@ function renderCardDataToElement(container, data) {
     const applyText = (targetStr, text) => {
         const el = container.querySelector(`[data-target="${targetStr}"]`);
         if(el) {
-            // Convert invisible text area line breaks (\n) into HTML line breaks (<br>)
+            // FIX: Convert invisible text area line breaks (\n) into HTML line breaks (<br>)
+            // This preserves paragraph spacing and blank lines perfectly.
             el.innerHTML = (text || '').toString().replace(/\n/g, '<br>');
         }
-        return el; 
+        return el; // Return the element so we can measure it below
     };
 
-    // --- 1. TEXT MAPPINGS ---
     const titleEl = applyText('name', data.name || 'Unnamed Item');
-    applyText('nameBack', data.name || 'Unnamed Item');
+    applyText('type', data.type);
+    applyText('weight', data.weight);
     
-    // Combine Type and Rarity for the back display
-    let typeRarityStr = [];
-    if (data.type) typeRarityStr.push(data.type);
-    if (data.rarity) typeRarityStr.push(data.rarity);
-    applyText('typeRarity', typeRarityStr.join(', '));
+    // We capture descEl here so we can style it below!
+    const descEl = applyText('desc', data.desc); 
     
-    applyText('weightBack', data.weight ? `${data.weight}` : '');
+    applyText('rules', data.rules);
     applyText('footerFront', data.fFront);
+    applyText('nameBack', data.name || 'Unnamed Item');
     applyText('footerBack', data.fBack);
 
-    // Capture descEl so we can style it below
-    const descEl = applyText('desc', data.desc); 
-    applyText('rules', data.rules);
-
-    // Handle Attunement text on the back
-    const attEl = container.querySelector('[data-target="attunementBack"]');
-    if(attEl) {
-        if (data.attunement) attEl.classList.remove('hidden');
-        else attEl.classList.add('hidden');
-    }
-
-    // --- 2. HANDLE EMPTY DESCRIPTIONS & SPACING ---
+    // --- 1. HANDLE EMPTY DESCRIPTIONS & SPACING ---
     if (descEl) {
         if (!data.desc || data.desc.trim() === '') {
             // If empty, hide it completely so rules slide to the top
@@ -217,7 +197,13 @@ function renderCardDataToElement(container, data) {
         }
     }
 
-    // --- 3. AUTO-SHRINK OR MANUAL FONT SIZE (Body Text) ---
+    const attEl = container.querySelector('[data-target="attunement"]');
+    if(attEl) {
+        if (data.attunement) attEl.classList.remove('hidden');
+        else attEl.classList.add('hidden');
+    }
+
+    // --- 2. AUTO-SHRINK OR MANUAL FONT SIZE ---
     const textBodyContainer = container.querySelector('.flex-grow.overflow-hidden');
     if (textBodyContainer) {
         // If the user typed a manual override, use it!
@@ -239,37 +225,19 @@ function renderCardDataToElement(container, data) {
             }
         }
     }
-
-    // --- 4. AUTO-SHRINK ITEM TITLE (Front Face) ---
+    // 2. Auto-shrink the Item Title
     if (titleEl) {
         if (titleEl.clientHeight > 0) {
-            let size = 24; // Starting size
-            titleEl.style.fontSize = size + 'px';
+            let titleSize = 24; 
+            titleEl.style.fontSize = titleSize + 'px';
             
-            while (titleEl.scrollHeight > titleEl.clientHeight && size > 12) {
-                size -= 1;
-                titleEl.style.fontSize = size + 'px';
+            while (titleEl.scrollHeight > 60 && titleSize > 12) {
+                titleSize -= 1;
+                titleEl.style.fontSize = titleSize + 'px';
             }
-            data.titleFontSize = size;
+            data.titleFontSize = titleSize;
         } else if (data.titleFontSize) {
             titleEl.style.fontSize = data.titleFontSize + 'px';
-        }
-    }
-
-    // --- 5. AUTO-SHRINK ITEM TITLE (Back Face) ---
-    const titleBackEl = container.querySelector('[data-target="nameBack"]');
-    if (titleBackEl) {
-        if (titleBackEl.clientHeight > 0) {
-            let size = 20; // Starting size for the back
-            titleBackEl.style.fontSize = size + 'px';
-            
-            while (titleBackEl.scrollHeight > titleBackEl.clientHeight && size > 10) {
-                size -= 1;
-                titleBackEl.style.fontSize = size + 'px';
-            }
-            data.titleBackFontSize = size;
-        } else if (data.titleBackFontSize) {
-            titleBackEl.style.fontSize = data.titleBackFontSize + 'px';
         }
     }
 }
