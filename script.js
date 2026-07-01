@@ -19,7 +19,9 @@ const inputs = {
     rules: document.getElementById('inputRules'),
     footerFront: document.getElementById('inputFooterFront'),
     footerBack: document.getElementById('inputFooterBack'),
-    brightness: document.getElementById('brightnessSlider')
+    brightness: document.getElementById('brightnessSlider'),
+    descSpacing: document.getElementById('inputDescSpacing'),
+    fontSize: document.getElementById('inputFontSize')
 };
 const brightnessVal = document.getElementById('brightnessVal');
 const imageUpload = document.getElementById('imageUpload');
@@ -112,6 +114,8 @@ function saveCurrentTabState() {
     c.fFront = inputs.footerFront.value;
     c.fBack = inputs.footerBack.value;
     c.bright = parseInt(inputs.brightness.value);
+    c.descSpacing = parseInt(inputs.descSpacing.value);
+    c.fontSizeOverride = inputs.fontSize.value;
 }
 
 function loadStateIntoInputs() {
@@ -126,7 +130,9 @@ function loadStateIntoInputs() {
     inputs.footerBack.value = c.fBack;
     inputs.brightness.value = c.bright;
     brightnessVal.textContent = c.bright;
-    
+    inputs.descSpacing.value = c.descSpacing !== undefined ? c.descSpacing : 12;
+    gapVal.textContent = inputs.descSpacing.value;
+    inputs.fontSize.value = c.fontSizeOverride || '';
     // Clear file upload UI visually to indicate ready for new load
     imageUpload.value = '';
 }
@@ -138,6 +144,9 @@ Object.values(inputs).forEach(input => {
         updateAllVisuals();
         if(input === inputs.brightness) {
             brightnessVal.textContent = input.value;
+        }
+        if(input === inputs.descSpacing) {
+            gapVal.textContent = input.value;
         }
     });
     if(input.type === 'checkbox') {
@@ -167,11 +176,26 @@ function renderCardDataToElement(container, data) {
     const titleEl = applyText('name', data.name || 'Unnamed Item');
     applyText('type', data.type);
     applyText('weight', data.weight);
-    applyText('desc', data.desc);
+    
+    // We capture descEl here so we can style it below!
+    const descEl = applyText('desc', data.desc); 
+    
     applyText('rules', data.rules);
     applyText('footerFront', data.fFront);
     applyText('nameBack', data.name || 'Unnamed Item');
     applyText('footerBack', data.fBack);
+
+    // --- 1. HANDLE EMPTY DESCRIPTIONS & SPACING ---
+    if (descEl) {
+        if (!data.desc || data.desc.trim() === '') {
+            // If empty, hide it completely so rules slide to the top
+            descEl.style.display = 'none';
+        } else {
+            // If text exists, show it and apply the spacing slider value
+            descEl.style.display = 'block';
+            descEl.style.marginBottom = (data.descSpacing !== undefined ? data.descSpacing : 12) + 'px';
+        }
+    }
 
     const attEl = container.querySelector('[data-target="attunement"]');
     if(attEl) {
@@ -179,25 +203,28 @@ function renderCardDataToElement(container, data) {
         else attEl.classList.add('hidden');
     }
 
-    // --- AUTO-SHRINK TEXT LOGIC ---
-    
-    // 1. Auto-shrink the Description & Rules block
+    // --- 2. AUTO-SHRINK OR MANUAL FONT SIZE ---
     const textBodyContainer = container.querySelector('.flex-grow.overflow-hidden');
     if (textBodyContainer) {
-        if (textBodyContainer.clientHeight > 0) {
-            let size = 18; 
-            textBodyContainer.style.fontSize = size + 'px';
-            
-            while (textBodyContainer.scrollHeight > textBodyContainer.clientHeight && size > 8) {
-                size -= 0.5;
+        // If the user typed a manual override, use it!
+        if (data.fontSizeOverride && data.fontSizeOverride.toString().trim() !== '') {
+            textBodyContainer.style.fontSize = data.fontSizeOverride + 'px';
+        } else {
+            // Otherwise, run the default auto-shrink loop
+            if (textBodyContainer.clientHeight > 0) {
+                let size = 18; 
                 textBodyContainer.style.fontSize = size + 'px';
+                
+                while (textBodyContainer.scrollHeight > textBodyContainer.clientHeight && size > 8) {
+                    size -= 0.5;
+                    textBodyContainer.style.fontSize = size + 'px';
+                }
+                data.bodyFontSize = size;
+            } else if (data.bodyFontSize) {
+                textBodyContainer.style.fontSize = data.bodyFontSize + 'px';
             }
-            data.bodyFontSize = size;
-        } else if (data.bodyFontSize) {
-            textBodyContainer.style.fontSize = data.bodyFontSize + 'px';
         }
     }
-
     // 2. Auto-shrink the Item Title
     if (titleEl) {
         if (titleEl.clientHeight > 0) {
