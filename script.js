@@ -3,16 +3,17 @@ let currentTab = 0;
 
 // Default templates for all 4 cards
 const cardsData = [
-    { name: "Ring of Protection +1", type: "Ring", weight: "-", attunement: true, desc: "A perfectly smooth silver band that reflects light with an unnatural brilliance.", rules: "Grants the wearer a +1 bonus to Armor Class and all saving throws. Multiple rings of protection do not stack their effects.", fFront: "~ D&D Item ~", fBack: "Illustration", img: null, bright: 0 },
-    { name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 },
-    { name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 },
-    { name: null, type: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 }
+    { name: "Ring of Protection +1", type: "Ring", rarity: "Rare", weight: "-", attunement: true, desc: "A perfectly smooth silver band that reflects light with an unnatural brilliance.", rules: "Grants the wearer a +1 bonus to Armor Class and all saving throws. Multiple rings of protection do not stack their effects.", fFront: "~ D&D Item ~", fBack: "Illustration", img: null, bright: 0 },
+    { name: null, type: null, rarity: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 },
+    { name: null, type: null, rarity: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 },
+    { name: null, type: null, rarity: null, weight: null, attunement: false, desc: null, rules: null,  fFront: null, fBack: null, img: null, bright: 0 }
 ];
 
 // Form Inputs
 const inputs = {
     name: document.getElementById('inputName'),
     type: document.getElementById('inputType'),
+    rarity: document.getElementById('inputRarity'),
     weight: document.getElementById('inputWeight'),
     attunement: document.getElementById('inputAttunement'),
     desc: document.getElementById('inputDesc'),
@@ -22,9 +23,9 @@ const inputs = {
     brightness: document.getElementById('brightnessSlider'),
     descSpacing: document.getElementById('inputDescSpacing'),
     fontSize: document.getElementById('inputFontSize'),
-    rarity: document.getElementById('inputRarity'),
 };
 const brightnessVal = document.getElementById('brightnessVal');
+const gapVal = document.getElementById('gapVal');
 const imageUpload = document.getElementById('imageUpload');
 
 // 3D Card Interaction
@@ -108,6 +109,7 @@ function saveCurrentTabState() {
     const c = cardsData[currentTab];
     c.name = inputs.name.value;
     c.type = inputs.type.value;
+    c.rarity = inputs.rarity.value;
     c.weight = inputs.weight.value;
     c.attunement = inputs.attunement.checked;
     c.desc = inputs.desc.value;
@@ -117,25 +119,28 @@ function saveCurrentTabState() {
     c.bright = parseInt(inputs.brightness.value);
     c.descSpacing = parseInt(inputs.descSpacing.value);
     c.fontSizeOverride = inputs.fontSize.value;
-    c.rarity = inputs.rarity.value;
 }
 
 function loadStateIntoInputs() {
     const c = cardsData[currentTab];
     inputs.name.value = c.name;
     inputs.type.value = c.type;
+    inputs.rarity.value = c.rarity || '';
     inputs.weight.value = c.weight;
     inputs.attunement.checked = c.attunement;
     inputs.desc.value = c.desc;
     inputs.rules.value = c.rules;
     inputs.footerFront.value = c.fFront;
     inputs.footerBack.value = c.fBack;
+    
     inputs.brightness.value = c.bright;
     brightnessVal.textContent = c.bright;
+    
     inputs.descSpacing.value = c.descSpacing !== undefined ? c.descSpacing : 12;
-    gapVal.textContent = inputs.descSpacing.value;
+    if(gapVal) gapVal.textContent = inputs.descSpacing.value;
+    
     inputs.fontSize.value = c.fontSizeOverride || '';
-    inputs.rarity.value = c.rarity || '';
+    
     // Clear file upload UI visually to indicate ready for new load
     imageUpload.value = '';
 }
@@ -148,7 +153,7 @@ Object.values(inputs).forEach(input => {
         if(input === inputs.brightness) {
             brightnessVal.textContent = input.value;
         }
-        if(input === inputs.descSpacing) {
+        if(input === inputs.descSpacing && gapVal) {
             gapVal.textContent = input.value;
         }
     });
@@ -234,7 +239,6 @@ function renderCardDataToElement(container, data) {
             }
         }
     }
-}
 
     // --- 4. AUTO-SHRINK ITEM TITLE (Front Face) ---
     if (titleEl) {
