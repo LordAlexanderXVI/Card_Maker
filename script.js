@@ -21,7 +21,8 @@ const inputs = {
     footerBack: document.getElementById('inputFooterBack'),
     brightness: document.getElementById('brightnessSlider'),
     descSpacing: document.getElementById('inputDescSpacing'),
-    fontSize: document.getElementById('inputFontSize')
+    fontSize: document.getElementById('inputFontSize'),
+    rarity: document.getElementById('inputRarity'),
 };
 const brightnessVal = document.getElementById('brightnessVal');
 const imageUpload = document.getElementById('imageUpload');
@@ -116,6 +117,7 @@ function saveCurrentTabState() {
     c.bright = parseInt(inputs.brightness.value);
     c.descSpacing = parseInt(inputs.descSpacing.value);
     c.fontSizeOverride = inputs.fontSize.value;
+    c.rarity = inputs.rarity.value;
 }
 
 function loadStateIntoInputs() {
@@ -133,6 +135,7 @@ function loadStateIntoInputs() {
     inputs.descSpacing.value = c.descSpacing !== undefined ? c.descSpacing : 12;
     gapVal.textContent = inputs.descSpacing.value;
     inputs.fontSize.value = c.fontSizeOverride || '';
+    inputs.rarity.value = c.rarity || '';
     // Clear file upload UI visually to indicate ready for new load
     imageUpload.value = '';
 }
@@ -166,26 +169,38 @@ function renderCardDataToElement(container, data) {
     const applyText = (targetStr, text) => {
         const el = container.querySelector(`[data-target="${targetStr}"]`);
         if(el) {
-            // FIX: Convert invisible text area line breaks (\n) into HTML line breaks (<br>)
-            // This preserves paragraph spacing and blank lines perfectly.
+            // Convert invisible text area line breaks (\n) into HTML line breaks (<br>)
             el.innerHTML = (text || '').toString().replace(/\n/g, '<br>');
         }
-        return el; // Return the element so we can measure it below
+        return el; 
     };
 
+    // --- 1. TEXT MAPPINGS ---
     const titleEl = applyText('name', data.name || 'Unnamed Item');
-    applyText('type', data.type);
-    applyText('weight', data.weight);
-    
-    // We capture descEl here so we can style it below!
-    const descEl = applyText('desc', data.desc); 
-    
-    applyText('rules', data.rules);
-    applyText('footerFront', data.fFront);
     applyText('nameBack', data.name || 'Unnamed Item');
+    
+    // Combine Type and Rarity for the back display
+    let typeRarityStr = [];
+    if (data.type) typeRarityStr.push(data.type);
+    if (data.rarity) typeRarityStr.push(data.rarity);
+    applyText('typeRarity', typeRarityStr.join(', '));
+    
+    applyText('weightBack', data.weight ? `${data.weight}` : '');
+    applyText('footerFront', data.fFront);
     applyText('footerBack', data.fBack);
 
-    // --- 1. HANDLE EMPTY DESCRIPTIONS & SPACING ---
+    // Capture descEl so we can style it below
+    const descEl = applyText('desc', data.desc); 
+    applyText('rules', data.rules);
+
+    // Handle Attunement text on the back
+    const attEl = container.querySelector('[data-target="attunementBack"]');
+    if(attEl) {
+        if (data.attunement) attEl.classList.remove('hidden');
+        else attEl.classList.add('hidden');
+    }
+
+    // --- 2. HANDLE EMPTY DESCRIPTIONS & SPACING ---
     if (descEl) {
         if (!data.desc || data.desc.trim() === '') {
             // If empty, hide it completely so rules slide to the top
@@ -197,13 +212,7 @@ function renderCardDataToElement(container, data) {
         }
     }
 
-    const attEl = container.querySelector('[data-target="attunement"]');
-    if(attEl) {
-        if (data.attunement) attEl.classList.remove('hidden');
-        else attEl.classList.add('hidden');
-    }
-
-    // --- 2. AUTO-SHRINK OR MANUAL FONT SIZE ---
+    // --- 3. AUTO-SHRINK OR MANUAL FONT SIZE (Body Text) ---
     const textBodyContainer = container.querySelector('.flex-grow.overflow-hidden');
     if (textBodyContainer) {
         // If the user typed a manual override, use it!
@@ -225,19 +234,37 @@ function renderCardDataToElement(container, data) {
             }
         }
     }
-    // 2. Auto-shrink the Item Title
+
+    // --- 4. AUTO-SHRINK ITEM TITLE (Front Face) ---
     if (titleEl) {
         if (titleEl.clientHeight > 0) {
-            let titleSize = 24; 
-            titleEl.style.fontSize = titleSize + 'px';
+            let size = 24; // Starting size
+            titleEl.style.fontSize = size + 'px';
             
-            while (titleEl.scrollHeight > 60 && titleSize > 12) {
-                titleSize -= 1;
-                titleEl.style.fontSize = titleSize + 'px';
+            while (titleEl.scrollHeight > titleEl.clientHeight && size > 12) {
+                size -= 1;
+                titleEl.style.fontSize = size + 'px';
             }
-            data.titleFontSize = titleSize;
+            data.titleFontSize = size;
         } else if (data.titleFontSize) {
             titleEl.style.fontSize = data.titleFontSize + 'px';
+        }
+    }
+
+    // --- 5. AUTO-SHRINK ITEM TITLE (Back Face) ---
+    const titleBackEl = container.querySelector('[data-target="nameBack"]');
+    if (titleBackEl) {
+        if (titleBackEl.clientHeight > 0) {
+            let size = 20; // Starting size for the back
+            titleBackEl.style.fontSize = size + 'px';
+            
+            while (titleBackEl.scrollHeight > titleBackEl.clientHeight && size > 10) {
+                size -= 1;
+                titleBackEl.style.fontSize = size + 'px';
+            }
+            data.titleBackFontSize = size;
+        } else if (data.titleBackFontSize) {
+            titleBackEl.style.fontSize = data.titleBackFontSize + 'px';
         }
     }
 }
