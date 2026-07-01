@@ -48,13 +48,22 @@
             </div>
 
             <div>
-                <label class="block text-xs font-medium text-gray-400 mb-1">Appearance & Description</label>
+                <label class="block text-xs font-medium text-gray-400 mb-1 flex justify-between">
+                    <span>Appearance & Description</span>
+                    <span class="text-[10px] text-gray-500 font-normal">Gap Below: <span id="gapVal">12</span>px</span>
+                </label>
                 <textarea id="inputDesc" rows="4" class="w-full bg-gray-900 border border-gray-600 rounded p-2 text-white focus:outline-none focus:border-amber-500 resize-none"></textarea>
+                <input type="range" id="inputDescSpacing" min="0" max="60" value="12" class="w-full h-1 mt-1 bg-gray-700 rounded-lg appearance-none cursor-pointer">
             </div>
 
             <div>
                 <label class="block text-xs font-medium text-gray-400 mb-1">Mechanics & Rules</label>
                 <textarea id="inputRules" rows="5" class="w-full bg-gray-900 border border-gray-600 rounded p-2 text-white focus:outline-none focus:border-amber-500 resize-none"></textarea>
+            </div>
+
+            <div>
+                <label class="block text-xs font-medium text-gray-400 mb-1">Manual Font Size (Leave empty for Auto-Shrink)</label>
+                <input type="number" id="inputFontSize" placeholder="Auto" class="w-full bg-gray-900 border border-gray-600 rounded p-2 text-white focus:outline-none focus:border-amber-500 placeholder-gray-600">
             </div>
 
             <div class="flex gap-4">
